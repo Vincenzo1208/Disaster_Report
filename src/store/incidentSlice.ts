@@ -2,6 +2,9 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { Incident, IncidentFilters } from '../types/incident';
 
+// ✅ Dynamic backend URL from .env (for Vercel and local)
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
 interface IncidentState {
   incidents: Incident[];
   filteredIncidents: Incident[];
@@ -26,11 +29,10 @@ const initialState: IncidentState = {
   basemapStyle: 'streets'
 };
 
-
 export const fetchIncidents = createAsyncThunk(
   'incidents/fetchIncidents',
   async () => {
-    const response = await fetch('/api/incidents');
+    const response = await fetch(`${API_URL}/api/incidents`);
     if (!response.ok) {
       throw new Error('Failed to fetch incidents');
     }
@@ -41,7 +43,7 @@ export const fetchIncidents = createAsyncThunk(
 export const createIncident = createAsyncThunk(
   'incidents/createIncident',
   async (incident: Omit<Incident, 'id' | 'timestamp'>) => {
-    const response = await fetch('/api/incidents', {
+    const response = await fetch(`${API_URL}/api/incidents`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -60,11 +62,11 @@ const applyFilters = (incidents: Incident[], filters: IncidentFilters): Incident
     if (filters.types.length > 0 && !filters.types.includes(incident.incidentType)) {
       return false;
     }
-    
+
     if (filters.severities.length > 0 && !filters.severities.includes(incident.severity)) {
       return false;
     }
-    
+
     if (filters.dateRange.start || filters.dateRange.end) {
       const incidentDate = new Date(incident.timestamp);
       if (filters.dateRange.start && incidentDate < new Date(filters.dateRange.start)) {
@@ -74,7 +76,7 @@ const applyFilters = (incidents: Incident[], filters: IncidentFilters): Incident
         return false;
       }
     }
-    
+
     return true;
   });
 };
