@@ -10,7 +10,22 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// ✅ Fix CORS: Allow localhost and Vercel frontend
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://disaster-report.vercel.app'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
 app.use(express.json());
 
 const db = new sqlite3.Database(':memory:');
@@ -94,10 +109,9 @@ db.serialize(() => {
 });
 
 // API Routes
-
 app.get('/api/incidents', (req, res) => {
   const { types, severities, startDate, endDate } = req.query;
-  
+
   let sql = 'SELECT * FROM incidents WHERE 1=1';
   const params = [];
 
@@ -152,7 +166,7 @@ app.post('/api/incidents', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [id, incidentType, severity, description, latitude, longitude, reporterName || null, timestamp], function(err) {
+  db.run(sql, [id, incidentType, severity, description, latitude, longitude, reporterName || null, timestamp], function (err) {
     if (err) {
       console.error('Database error:', err);
       res.status(500).json({ error: 'Failed to create incident' });
