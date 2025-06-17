@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import incidentReducer from './incidentSlice';
+import themeReducer from './themeSlice';
 
 export const store = configureStore({
   reducer: {
     incidents: incidentReducer,
+    theme: themeReducer,
   },
 });
 
