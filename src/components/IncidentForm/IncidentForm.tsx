@@ -247,7 +247,7 @@ export const IncidentForm: React.FC<IncidentFormProps> = ({
 
             {/* Reporter Name */}
             <div className="space-y-2">
-              <label className={`block text-sm font-semibold flex items-center space-x-2 transition-colors duration-300 ${
+              <label className={` text-sm font-semibold flex items-center space-x-2 transition-colors duration-300 ${
                 isDarkMode ? 'text-slate-300' : 'text-slate-700'
               }`}>
                 <User className="w-4 h-4" />
@@ -271,7 +271,7 @@ export const IncidentForm: React.FC<IncidentFormProps> = ({
             <div className={`space-y-3 p-4 rounded-xl border transition-colors duration-300 ${
               isDarkMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'
             }`}>
-              <label className={`block text-sm font-semibold flex items-center space-x-2 transition-colors duration-300 ${
+              <label className={` text-sm font-semibold flex items-center space-x-2 transition-colors duration-300 ${
                 isDarkMode ? 'text-slate-300' : 'text-slate-700'
               }`}>
                 <MapPin className="w-4 h-4" />
